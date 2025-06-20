@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jane Street OCaml Challenge</title>
+</head>
+<body>
+  <h1>Jane Street OCaml Challenge: Welcome</h1>
+
+  <p>
+    <strong>Instructions:</strong><br>
+    This exercise is meant to familiarize you with the system.<br><br>
+
+    Write OCaml code using your favorite text editor; if you aren't already
+    committed to one, we recommend <strong>Visual Studio Code</strong>.<br><br>
+
+    To compile your code and run inline tests, run:<br>
+    <code>dune runtest</code><br><br>
+
+    Try building this code.<br>
+    You should see a compilation error because it's missing the end quote. Add
+    the end quote and re-run. You should see that the code compiled and ran!<br><br>
+
+    You can also execute code in <code>utop</code> directly. Try pasting this line of code
+    into <code>utop</code> and running it there.
+  </p>
+
+  <!-- OCaml editor -->
+  <x-ocaml>
+let () = Stdio.printf "Hello, World!
+  </x-ocaml>
+  <h2>Integers and Floats</h2>
+<x-ocaml>
+let four = 4
+let float_four = 4.
+</x-ocaml>
+
+<h2>Function Definitions</h2>
+<x-ocaml>
+let int_average x y = failwith "For you to implement"
+let float_average x y = failwith "For you to implement"
+</x-ocaml>
+
+<h2>String Operations</h2>
+<x-ocaml>
+let first_name = "Fred"
+let last_name : string = "Flintstone"
+let full_name = first_name ^ " " ^ last_name
+</x-ocaml>
+
+<h2>Printing</h2>
+<x-ocaml>
+let () =
+  Stdio.print_endline "Hi, My name is ";
+  Stdio.print_endline full_name;
+  Stdio.print_endline " and I am 5 years old"
+</x-ocaml>
+
+<h2>Formatted Print</h2>
+<x-ocaml>
+let () =
+  Stdio.printf "Hi, My name is %s and I am %d years old\n" full_name 5
+</x-ocaml>
+
+<h2>Tests for Your Functions</h2>
+<x-ocaml>
+let%test "Testing int_average..." =
+  Int.equal (int_average 5 5) 5
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing int_average..." =
+  Int.(=) (int_average 50 100) 75
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing float_average..." =
+  Float.(=) (float_average 5. 5.) 5.
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing float_average..." =
+  Float.equal (float_average 5. 10.) 7.5
+</x-ocaml>
+<h2>Challenge 3: Defining Your Own Arithmetic Functions</h2>
+
+<p>We use <code>let</code> to define functions in OCaml. This challenge teaches how to define basic arithmetic and string operations.</p>
+
+<h3>Function Definition Example</h3>
+<x-ocaml>
+(* Defining a function that adds 1 to its argument *)
+let add1 arg = arg + 1
+</x-ocaml>
+
+<h3>String Append Function</h3>
+<x-ocaml>
+(* This function uses the built-in ^ operator to append strings *)
+let string_append x y = x ^ y
+</x-ocaml>
+
+<h3>Your Turn: Implement Basic Arithmetic</h3>
+<x-ocaml>
+(* Implement the following using +, -, *, and / *)
+let plus x y = failwith "For you to implement"
+let times x y = failwith "For you to implement"
+let minus x y = failwith "For you to implement"
+let divide x y = failwith "For you to implement"
+</x-ocaml>
+
+<h3>Tests for Your Arithmetic Functions</h3>
+
+<x-ocaml>
+let%test "Testing plus..." = Int.( = ) 2 (plus 1 1)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing plus..." = Int.( = ) 49 (plus (-1) 50)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing times..." = Int.( = ) 64 (times 8 8)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing times..." = Int.( = ) (-2048) (times (-2) 1024)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing minus..." = Int.( = ) (-4) (minus (-2) 2)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing minus..." = Int.( = ) 1000 (minus 1337 337)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing divide..." = Int.( = ) 512 (divide 1024 2)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing divide..." = Int.( = ) 1010 (divide 31337 31)
+</x-ocaml>
+
+  
+
+  <!-- x-ocaml library scripts -->
+  <script async
+  src="https://cdn.jsdelivr.net/gh/art-w/x-ocaml.js@1/x-ocaml.js"
+  src-worker="https://cdn.jsdelivr.net/gh/art-w/x-ocaml.js@1/x-ocaml.worker+effects.js">
+  </script>
+
+</body>
+</html>
