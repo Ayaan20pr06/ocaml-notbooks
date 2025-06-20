@@ -771,6 +771,566 @@ let%test "Testing card_value_to_score..." =
 </x-ocaml>
 
 
+
+<p>Many languages have a concept of "Null", which describes that some data is absent. In OCaml, we can model the presence/absence data using ordinary variants.</p>
+
+<p>Note: we're defining the <code>option</code> type here to show you that it isn't magic. In real life you would always use the <code>option</code> type provided by the standard library. <code>Base</code> comes with a convenient <code>Option</code> module with many useful functions.</p>
+
+<x-ocaml>
+type 'a option =
+  | None
+  | Some of 'a
+</x-ocaml>
+
+<p>An ['a option] is either [None], meaning absence of data, or [Some x] meaning the data exists, and that data specifically is [x]. Here's an example:</p>
+
+<x-ocaml>
+let what_number_am_i_thinking (my_number : int option) =
+  match my_number with
+  | None        -> "I'm not thinking of any number!"
+  | Some number -> "My number is: " ^ (Int.to_string number)
+</x-ocaml>
+
+<x-ocaml>
+let%test _ =
+  String.(=) (what_number_am_i_thinking None) "I'm not thinking of any number!"
+</x-ocaml>
+
+<x-ocaml>
+let%test _ =
+  String.(=) (what_number_am_i_thinking (Some 7)) "My number is: 7"
+</x-ocaml>
+
+<p>Implement the function [safe_divide ~dividend ~divisor], which takes two ints and returns an int option. It should return None if [divisor = 0], and otherwise returns [Some x] where [x] is the division result</p>
+
+<x-ocaml>
+let safe_divide ~dividend ~divisor =
+  failwith "For you to implement"
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing safe_divide..." =
+  match (safe_divide ~dividend:3 ~divisor:2) with
+  | Some 1 -> true
+  | _      -> false
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing safe_divide..." =
+  match safe_divide ~dividend:3 ~divisor:0 with
+  | None -> true
+  | _    -> false
+</x-ocaml>
+
+<p>Implement a function [concatenate string1 string2], which takes two [string option]s and returns a [string option] that is [Some x] where x is the concatenation of the two strings, if they exist, and [None] if either of the strings is [None].</p>
+
+<x-ocaml>
+let option_concatenate string1 string2 = 
+  failwith "For you to implement"
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing option_concatenate..." =
+  match option_concatenate (Some "hello") (Some "world") with
+  | Some "helloworld" -> true
+  | _ -> false
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing option_concatenate..." =
+  match option_concatenate None (Some "world") with
+  | None -> true
+  | _ -> false
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing option_concatenate..." =
+  match option_concatenate (Some "hello") None with
+  | None -> true
+  | _ -> false
+</x-ocaml>
+
+
+
+
+
+
+<h1>Tuples and Parametrized Types</h1>
+
+  <p>* Another non-basic type in OCaml is a tuple. A tuple is an ordered collection
+     of values that can each be of a different type. The signature for a tuple is
+     written by separating all the types within the tuple by a *.</p>
+  <x-ocaml>
+type int_and_string_and_char = int * string * char
+  </x-ocaml>
+
+  <p>* Tuples are created by joining values with a comma:</p>
+  <x-ocaml>
+let example : int_and_string_and_char = 5, "hello", 'A'
+  </x-ocaml>
+
+  <p>* You can also extract the components of a tuple:</p>
+  <x-ocaml>
+let i, s, c = example
+
+let () =
+  assert (i = 5);
+  assert (String.( = ) s "hello");
+  assert (Char.( = ) c 'A')
+  </x-ocaml>
+
+  <p>* Consider a coordinate type containing the x and y values of a coordinate.
+     Write a function that computes the sum of two coordinates.</p>
+  <x-ocaml>
+type coordinate = int * int
+
+let add coord1 coord2 = failwith "For you to implement"
+  </x-ocaml>
+
+  <p>* Now consider a name type containing strings representing first and last names</p>
+  <x-ocaml>
+type name = string * string
+  </x-ocaml>
+
+  <p>* Or an initials type containing chars representing first and last initials</p>
+  <x-ocaml>
+type initials = char * char
+  </x-ocaml>
+
+  <p>* Say we want to write a function that extracts the first element from a coordinate,
+     name, or initials. We currently can't write that because they all have different
+     types.
+     Lets define a new pair type which is parameterized over the type contained in
+     the pair. We write this as</p>
+  <x-ocaml>
+type 'a pair = 'a * 'a
+  </x-ocaml>
+
+  <p>* Our types defined above could be rewritten as</p>
+  <x-ocaml>
+(* type coordinate = int    pair *)
+(* type name       = string pair *)
+(* type initials   = char   pair *)
+  </x-ocaml>
+
+  <p>* We can construct pairs just like we construct regular tuples</p>
+  <x-ocaml>
+let int_pair : int pair = 5, 7
+let string_pair : string pair = "foo", "bar"
+let nested_char_pair : char pair pair = ('a', 'b'), ('c', 'd')
+  </x-ocaml>
+
+  <p>* Write functions to extract the first and second elements from a pair.</p>
+  <x-ocaml>
+let first pair = failwith "For you to implement"
+  </x-ocaml>
+  <x-ocaml>
+let second pair = failwith "For you to implement"
+  </x-ocaml>
+
+  <p>* Notice the cool [%compare.equal: int*int] here!</p>
+  <x-ocaml>
+let%test "Testing add..." = [%compare.equal: int * int] (4, 7) (add (5, 3) (-1, 4))
+  </x-ocaml>
+  <x-ocaml>
+let%test "Testing first..." = String.( = ) "foo" (first ("foo", "bar"))
+  </x-ocaml>
+  <x-ocaml>
+let%test "Testing second..." = Char.( = ) 'b' (second ('a', 'b'))
+  </x-ocaml>
+
+
+
+ <h1>OCaml Record Types</h1>
+
+  <p>OCaml allows you to define record types. These are like structs in C, or data members of a class in python/ruby/java.</p>
+  <x-ocaml>
+type person =
+  { age            : int
+  ; first_name     : string
+  ; last_name      : string
+  ; number_of_cars : int
+  } [@@deriving compare]
+  </x-ocaml>
+
+  <p>We can create a <code>person</code> like this.</p>
+  <x-ocaml>
+let an_example : person =
+  { first_name = "Cotton-eyed"
+  ; last_name = "Joe"
+  ; age = 22
+  ; number_of_cars = 0
+  }
+  </x-ocaml>
+
+  <p>In order to get a field out of a record we use the "." operator: <code>VARIABLE.FIELD</code></p>
+  <x-ocaml>
+let age : int = an_example.age
+let () = assert (age = 22)
+  </x-ocaml>
+
+  <p>We can also match on records to get field information.</p>
+  <x-ocaml>
+let print_info {first_name; last_name; age; number_of_cars} =
+  Stdio.print_endline first_name;
+  Stdio.print_endline last_name;
+  Stdio.printf "Age: %d, # of cars: %d\n" age number_of_cars
+  </x-ocaml>
+
+  <p>If we don't care about an argument we can ignore it using <code>= _</code></p>
+  <x-ocaml>
+let print_name ({first_name; last_name; age = _; number_of_cars = _}) =
+  Stdio.print_endline first_name;
+  Stdio.print_endline last_name
+  </x-ocaml>
+
+  <p>Finally, we can perform "functional updates" by replacing the value of a field, yielding a brand new record. We use the <code>with</code> keyword to do this.</p>
+  <x-ocaml>
+let add_one_to_age person =
+  { person with age = person.age + 1 }
+
+let () = assert (23 = (add_one_to_age an_example).age)
+  </x-ocaml>
+
+  <p>Write a function that does different things for different people:</p>
+  <p>When the person's first name is "Jan", you should return a record with the age set to 30. Otherwise, you should increase the number of cars by 6.</p>
+  <x-ocaml>
+let modify_person (person : person) =
+  failwith "For you to implement"
+  </x-ocaml>
+
+  <p>Test cases:</p>
+  <x-ocaml>
+module For_testing = struct
+  let test_ex1 : person = {
+    first_name = "Jan";
+    last_name = "Saffer";
+    age = 55;
+    number_of_cars = 0;
+  };;
+
+  let test_ex1' : person = {test_ex1 with age = 30};;
+
+  let test_ex2 : person = {
+    first_name = "Hugo";
+    last_name = "Heuzard";
+    age = 4;
+    number_of_cars = 55;
+  };;
+
+  let test_ex2' : person = { test_ex2 with number_of_cars = 61};;
+
+  let%test "Testing modify_person..." =
+    [%compare.equal: person] test_ex1' (modify_person test_ex1)
+  ;;
+
+  let%test "Testing modify_person..." =
+    [%compare.equal: person] test_ex2' (modify_person test_ex2)
+  ;;
+end
+  </x-ocaml>
+
+
+
+
+
+
+
+
+
+<h1>🔁 Mutable Records</h1>
+
+  <p>Sometimes rather than redefining the record you would like to have a field or a set of fields that you can modify on the fly.</p>
+  <p>In OCaml if you want to have a field in a record that can be updated in place you must use some additional syntax. The <code>mutable</code> keyword makes the field modifiable.</p>
+  <p>Then you can use <code>&lt;-</code> to set the record value to a new value.</p>
+
+  <x-ocaml>
+type color =
+  | Red
+  | Yellow
+  | Green
+[@@deriving compare]
+  </x-ocaml>
+
+  <p>You'll get an error about <code>Unbound value compare_color</code>. This is because we used the <code>[compare]</code> ppx for <code>stoplight</code> below, which has a <code>color</code> as one of its fields, but we didn't have <code>[compare]</code> on <code>color</code>.</p>
+  <p>Fix it by adding this: <code>[@@deriving compare]</code></p>
+
+  <x-ocaml>
+type stoplight =
+  { location : string
+  ; mutable color : color
+  }
+[@@deriving compare]
+  </x-ocaml>
+
+  <x-ocaml>
+let an_example : stoplight =
+  { location = "The corner of Vesey Street and the West Side highway"; color = Red }
+  </x-ocaml>
+
+  <x-ocaml>
+let set_color stoplight color = stoplight.color &lt;- color
+  </x-ocaml>
+
+  <p>Since we know that stoplights always go from Green to Yellow, Yellow to Red, and Red to Green, we can just write a function to advance the color of the light without taking an input color.</p>
+
+  <x-ocaml>
+let advance_color stoplight = failwith "For you to implement"
+  </x-ocaml>
+
+  <x-ocaml>
+module For_testing = struct
+  let test_ex_red : stoplight = { location = ""; color = Red }
+  let test_ex_red' : stoplight = { test_ex_red with color = Green }
+  let test_ex_yellow : stoplight = { location = ""; color = Yellow }
+  let test_ex_yellow' : stoplight = { test_ex_red with color = Red }
+  let test_ex_green : stoplight = { location = ""; color = Green }
+  let test_ex_green' : stoplight = { test_ex_red with color = Yellow }
+
+  let%test "Testing advance_color..." =
+    advance_color test_ex_green;
+    [%compare.equal: stoplight] test_ex_green' test_ex_green
+  ;;
+
+  let%test "Testing advance_color..." =
+    advance_color test_ex_yellow;
+    [%compare.equal: stoplight] test_ex_yellow' test_ex_yellow'
+  ;;
+
+  let%test "Testing advance_color..." =
+    advance_color test_ex_red;
+    [%compare.equal: stoplight] test_ex_red' test_ex_red
+  ;;
+end
+  </x-ocaml>
+
+
+
+
+
+
+<h1>OCaml: Working with Refs</h1>
+
+  <p>(* It is sometimes useful to create a single mutable value. We can do this
+     using a ref. We can create an [int ref] containing 0 as follows: *)</p>
+  <x-ocaml>
+let x = ref 0
+  </x-ocaml>
+
+  <p>(* Then we can access the value in the ref using the ! operator, and
+     we can update it using the := operator. So, we could increment our
+     ref as follows: *)</p>
+  <x-ocaml>
+let () =
+  x := !x + 1
+  </x-ocaml>
+
+  <p>(* Write a function min_and_max which returns a tuple containing the
+     minimum and maximum values in a non-empty list of positive
+     integers. Your function should raise if the list is empty.
+
+     Your function should iterate over the list and maintain refs of the
+     minimum and maximum values seen so far.  *)</p>
+  <x-ocaml>
+let min_and_max lst =
+  match lst with
+  | [] -> failwith "Empty list"
+  | hd :: tl ->
+    let min_ref = ref hd in
+    let max_ref = ref hd in
+    List.iter tl ~f:(fun x ->
+      if x < !min_ref then min_ref := x;
+      if x > !max_ref then max_ref := x);
+    (!min_ref, !max_ref)
+  </x-ocaml>
+
+  <x-ocaml>
+let%test "Testing min_and_max..." =
+  [%compare.equal: int*int] (min_and_max [5;9;2;4;3]) (2,9)
+  </x-ocaml>
+
+  <x-ocaml>
+let%test "Testing min_and_max..." =
+  [%compare.equal: int*int] (min_and_max [11;15;7;34]) (7,34)
+  </x-ocaml>
+
+
+
+
+
+ <h2>🧠 Functions as Values and Anonymous Functions</h2>
+
+  <p>
+    In OCaml, functions are values, so we can pass them in as arguments to other functions.
+    To represent a function in a signature, you wrap its type in parentheses, with arrows separating arguments.
+  </p>
+
+  <p>
+    Recall: a function called <code>add1</code> which takes an integer and returns an integer has the type:
+    <code>val add1 : int -> int</code>.
+  </p>
+
+  <p>
+    So, to use that signature in a type, we'd write: <code>(int -> int)</code>
+  </p>
+
+  <p>
+    We now define a function called <code>map_option</code>.
+    <code>map_option</code> takes a function and an option.
+    If the option has a value of <code>None</code>, <code>map_option</code> returns <code>None</code>.
+    If the option has a value of <code>Some x</code>, the function is called on x,
+    and wrapped up in a <code>Some</code>.
+  </p>
+
+  <x-ocaml>
+let map_option f opt =
+  match opt with
+  | None -> None
+  | Some i -> Some (f i)
+  </x-ocaml>
+
+  <x-ocaml>
+let double i = 2 * i
+  </x-ocaml>
+
+  <x-ocaml>
+let () =
+  assert
+    ([%compare.equal: int option]
+       (map_option double None)
+       None)
+  </x-ocaml>
+
+  <x-ocaml>
+let () =
+  assert
+    ([%compare.equal: int option]
+       (map_option double (Some 2))
+       (Some 4))
+  </x-ocaml>
+
+  <p>
+    Instead of defining the function <code>double</code> beforehand, we can use
+    an anonymous function.
+  </p>
+
+  <p>
+    To write an anonymous function, the <code>fun</code> keyword is used in the following form:<br>
+    <code>(fun ARG1 ARG2 ... -> BODY)</code>
+  </p>
+
+  <x-ocaml>
+let () =
+  assert
+    ([%compare.equal: int option]
+       (map_option (fun i -> 2 * i) (Some 2))
+       (Some 4))
+  </x-ocaml>
+
+  <p>
+    Define a function, <code>apply_if_nonzero</code>, which takes a function from
+    <code>int -> int</code> and an int, and applies the function if the integer
+    is not zero, and otherwise just returns 0.
+  </p>
+
+  <x-ocaml>
+let apply_if_nonzero f i =
+  failwith "For you to implement"
+  </x-ocaml>
+
+  <x-ocaml>
+let%test "Testing apply_if_nonzero..." =
+  Int.(=) 0 (apply_if_nonzero (fun x -> 10 / x) 0)
+  </x-ocaml>
+
+  <x-ocaml>
+let%test "Testing apply_if_nonzero..." =
+  Int.(=) 2 (apply_if_nonzero (fun x -> 10 / x) 5)
+  </x-ocaml>
+
+<p>OCaml, like many other languages, provides a way to interact with code via
+   interfaces. This allows implementation details to be hidden away, and for
+   grouped units of code to restrict how they are used.</p>
+
+<p>Here's an example of a module signature coupled with an implementation. The
+   signature is wrapped in a sig / end pair. The implementation is wrapped in a
+   struct / end pair.</p>
+
+<x-ocaml>
+module Example : sig
+  val the_meaning_of_life_the_universe_and_everything : int
+  val subtract_one : int -> int
+end = struct
+  let the_meaning_of_life_the_universe_and_everything = 42
+  let subtract_one x = x - 1
+end
+</x-ocaml>
+
+<p>Here's how we use these values</p>
+
+<x-ocaml>
+let one_less_than_the_meaning_of_life_etc =
+  Example.subtract_one Example.the_meaning_of_life_the_universe_and_everything
+;;
+
+assert (one_less_than_the_meaning_of_life_etc = 41)
+</x-ocaml>
+
+<p>Types can be exposed via signatures in OCaml as well. Here's an example of declaring
+   an "abstract" type - one where the definition of the type is not exposed.</p>
+
+<x-ocaml>
+module Abstract_type_example : sig
+  type t
+  val to_int : t -> int
+  val zero : t
+  val one : t
+  val add : t -> t -> t
+end = struct
+  type t = int
+
+  let to_int x = x
+  let zero = 0
+  let one = 1
+  let add = ( + )
+end
+</x-ocaml>
+
+<p>Here's an example of adding 2 and 2</p>
+
+<x-ocaml>
+let two = Abstract_type_example.add Abstract_type_example.one Abstract_type_example.one
+let four = Abstract_type_example.to_int (Abstract_type_example.add two two);;
+
+assert (four = 4)
+</x-ocaml>
+
+<x-ocaml>
+module Fraction : sig
+  type t
+  (* TODO: Add signatures for the create and value functions to expose them in
+     the Fraction module. *)
+end = struct
+  type t = int * int
+
+  let create ~numerator ~denominator = numerator, denominator
+  let value (numerator, denominator) = Float.of_int numerator /. Float.of_int denominator
+end
+
+let%test "Testing Fraction.value..." =
+  Float.( = ) 2.5 (Fraction.value (Fraction.create ~numerator:5 ~denominator:2))
+;;
+
+let%test "Testing Fraction.value..." =
+  Float.( = ) 0.4 (Fraction.value (Fraction.create ~numerator:4 ~denominator:10))
+;;
+</x-ocaml>
+
+
+
+
+
+
   
 
   <!-- x-ocaml library scripts -->
