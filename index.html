@@ -141,6 +141,636 @@ let%test "Testing divide..." = Int.( = ) 512 (divide 1024 2)
 let%test "Testing divide..." = Int.( = ) 1010 (divide 31337 31)
 </x-ocaml>
 
+<h2>🔁 Challenge 4: Higher-Order Functions</h2>
+
+<p>Define <code>add1</code>, a function that adds 1 to its input:</p>
+<x-ocaml>
+let add1 x = x + 1
+</x-ocaml>
+
+<p>Define <code>square</code>, a function that multiplies a number by itself:</p>
+<x-ocaml>
+let square x = x * x
+</x-ocaml>
+
+<p>Now define <code>twice</code>, which takes a function <code>f</code> and applies it to an input twice:</p>
+<x-ocaml>
+let twice f x = f (f x)
+</x-ocaml>
+
+<p>Define <code>add2</code> using <code>add1</code> and <code>twice</code>:</p>
+<x-ocaml>
+let add2 = twice add1
+</x-ocaml>
+
+<p>Define <code>raise_to_the_fourth</code> using <code>square</code>:</p>
+<x-ocaml>
+let raise_to_the_fourth = twice square
+</x-ocaml>
+
+<p>Tests:</p>
+
+<x-ocaml>
+let%test "Testing add1..." = Int.(=) 5 (add1 4)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing square..." = Int.(=) 16 (square 4)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing square..." = Int.(=) 16 (square (-4))
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing twice..." = Int.(=) 5 (twice add1 3)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing add2..." = Int.(=) 1337 (add2 1335)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing raise_to_the_fourth..." = Int.(=) 1 (raise_to_the_fourth 1)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing raise_to_the_fourth..." = Int.(=) 10000 (raise_to_the_fourth 10)
+</x-ocaml>
+
+
+
+
+
+
+
+<h2>🎭 Challenge 5: Pattern Matching</h2>
+
+<p>Pattern matching compares inputs to known cases. Here's an example that checks if someone is Superman:</p>
+
+<x-ocaml>
+let is_superman x =
+  match x with
+  | "Clark Kent" -> true
+  | _ -> false
+;;
+</x-ocaml>
+
+<p>We can also pattern match on <strong>multiple values</strong> at the same time:</p>
+
+<x-ocaml>
+let is_same_person x y = 
+  match x, y with 
+  | "Clark Kent", "Superman"
+  | "Peter Parker", "Spiderman" -> true
+  | _ -> false
+;;
+</x-ocaml>
+
+---
+
+<h3>🧪 Task 1: Match a single int</h3>
+<p>Write <code>non_zero</code> that returns <code>true</code> if input is not 0.</p>
+
+<x-ocaml>
+let non_zero x =
+  match x with
+  | 0 -> false
+  | _ -> true
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing non_zero..." = Bool.( = ) false (non_zero 0)
+</x-ocaml>
+<x-ocaml>
+let%test "Testing non_zero..." = Bool.( = ) true (non_zero 500)
+</x-ocaml>
+<x-ocaml>
+let%test "Testing non_zero..." = Bool.( = ) true (non_zero (-400))
+</x-ocaml>
+
+---
+
+<h3>🧪 Task 2: Match on two values</h3>
+<p>Write <code>both_non_zero</code> that returns true only if both inputs are not 0.</p>
+
+<x-ocaml>
+let both_non_zero x y =
+  match x, y with
+  | 0, _ -> false
+  | _, 0 -> false
+  | _, _ -> true
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing both_positive..." = Bool.( = ) false (both_non_zero 0 0)
+</x-ocaml>
+<x-ocaml>
+let%test "Testing both_positive..." = Bool.( = ) false (both_non_zero 0 1)
+</x-ocaml>
+<x-ocaml>
+let%test "Testing both_positive..." = Bool.( = ) false (both_non_zero (-20) 0)
+</x-ocaml>
+<x-ocaml>
+let%test "Testing both_positive..." = Bool.( = ) true (both_non_zero 400 (-5))
+</x-ocaml>
+
+
+
+
+
+
+
+
+<h2>🔁 Challenge 6: Recursion</h2>
+
+<p>This function recursively adds every number up to <code>x</code>. Try compiling it with <code>let</code> first, then fix it with <code>let rec</code>.</p>
+
+<x-ocaml>
+let rec add_every_number_up_to x =
+  assert (x >= 0);
+  match x with
+  | 0 -> 0
+  | _ -> x + add_every_number_up_to (x - 1)
+;;
+</x-ocaml>
+
+---
+
+<h3>🧮 Task: Write a recursive <code>factorial</code> function</h3>
+
+<x-ocaml>
+let rec factorial x =
+  assert (x >= 0);
+  match x with
+  | 0 -> 1
+  | _ -> x * factorial (x - 1)
+;;
+</x-ocaml>
+
+<h4>✅ Tests:</h4>
+
+<x-ocaml>
+let%test "Testing factorial..." = Int.( = ) 1 (factorial 0)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing factorial..." = Int.( = ) 120 (factorial 5)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing factorial..." = Int.( = ) 479001600 (factorial 12)
+</x-ocaml>
+
+
+
+
+
+<h2>📋 Challenge 7: Lists and Pattern Matching</h2>
+
+<p>OCaml supports built-in linked lists. This test shows that lists can be constructed using the <code>::</code> operator:</p>
+
+<x-ocaml>
+let () = assert ([%compare.equal: int list] [ 5; 1; 8; 4 ]  (5 :: 1 :: 8 :: 4  :: []))
+</x-ocaml>
+
+<p>This function recursively computes the length of a list:</p>
+
+<x-ocaml>
+let rec length lst =
+  match lst with
+  | [] -> 0
+  | _ :: tl -> 1 + length tl
+;;
+</x-ocaml>
+
+---
+
+<h3>🧮 Task: Compute the sum of a list</h3>
+
+<p>Define <code>sum</code> recursively by pattern matching on the list:</p>
+
+<x-ocaml>
+let rec sum lst =
+  match lst with
+  | [] -> 0
+  | hd :: tl -> hd + sum tl
+</x-ocaml>
+
+<h4>✅ Tests:</h4>
+
+<x-ocaml>let%test "Testing sum..." = Int.( = ) 0 (sum [])</x-ocaml>
+<x-ocaml>let%test "Testing sum..." = Int.( = ) 55 (sum [ 55 ])</x-ocaml>
+<x-ocaml>let%test "Testing sum..." = Int.( = ) 0 (sum [ 5; -5; 1; -1 ])</x-ocaml>
+<x-ocaml>let%test "Testing sum..." = Int.( = ) 12 (sum [ 5; 5; 1; 1 ])</x-ocaml>
+
+---
+
+<h3>🧩 List Utilities: Append and Prepend</h3>
+
+<x-ocaml>
+(* Appending two lists *)
+let list_append first second = first @ second
+</x-ocaml>
+
+<x-ocaml>
+(* Prepending an element to a list *)
+let new_head hd rest = hd :: rest
+</x-ocaml>
+
+
+
+
+<h2>🔢 Challenge 8: List Ranges and Append</h2>
+
+<p>OCaml has a built-in <code>@</code> operator to concatenate two lists:</p>
+
+<x-ocaml>
+let () =
+  assert ([%compare.equal: int list] ([ 5; 1 ] @ [ 8; 4 ]) [ 5; 1; 8; 4 ]);
+  assert ([%compare.equal: int list] (List.append [ 5; 1 ] [ 8; 4 ]) [ 5; 1; 8; 4 ])
+;;
+</x-ocaml>
+
+---
+
+<h3>🧪 Task: Generate a Range of Integers</h3>
+
+<p>Write a function <code>range from to_</code> that returns a list of integers starting at <code>from</code> and going up to <code>to_ - 1</code>.</p>
+
+<x-ocaml>
+let rec range from to_ =
+  if from >= to_ then []
+  else from :: range (from + 1) to_
+</x-ocaml>
+
+---
+
+<h4>✅ Tests:</h4>
+
+<x-ocaml>
+let%test "Testing range..." = [%compare.equal: int list] (range 1 4) [ 1; 2; 3 ]
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing range..." =
+  [%compare.equal: int list] (range (-5) 3) [ -5; -4; -3; -2; -1; 0; 1; 2 ]
+</x-ocaml>
+
+
+
+
+<h2>📐 Challenge: Integer Range Generator</h2>
+
+<p>The <code>@</code> operator concatenates two lists:</p>
+
+<x-ocaml>
+let () =
+  assert ([%compare.equal: int list] ([ 5; 1 ] @ [ 8; 4 ]) [ 5; 1; 8; 4 ]);
+  assert ([%compare.equal: int list] (List.append [ 5; 1 ] [ 8; 4 ]) [ 5; 1; 8; 4 ])
+;;
+</x-ocaml>
+
+---
+
+<p>🛠️ <strong>Task</strong>: Write a function <code>range from to_</code> that returns a list of all integers from <code>from</code> (inclusive) to <code>to_</code> (exclusive).</p>
+
+<x-ocaml>
+let rec range from to_ =
+  if from >= to_ then []
+  else from :: range (from + 1) to_
+</x-ocaml>
+
+---
+
+<h3>🧪 Tests</h3>
+
+<x-ocaml>
+let%test "Testing range..." = [%compare.equal: int list] (range 1 4) [ 1; 2; 3 ]
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing range..." =
+  [%compare.equal: int list] (range (-5) 3) [ -5; -4; -3; -2; -1; 0; 1; 2 ]
+</x-ocaml>
+
+
+
+
+<h2>✖️ Challenge: List Product</h2>
+
+<p>Write a function that returns the product of all elements in a list.</p>
+
+<x-ocaml>
+let rec product xs =
+  match xs with
+  | [] -> 1
+  | hd :: tl -> hd * product tl
+;;
+</x-ocaml>
+
+<h3>🧪 Tests</h3>
+
+<x-ocaml>let%test "Testing product..." = Int.equal 1 (product [])</x-ocaml>
+<x-ocaml>let%test "Testing product..." = Int.equal 55 (product [ 55 ])</x-ocaml>
+<x-ocaml>let%test "Testing product..." = Int.equal 25 (product [ 5; -5; 1; -1 ])</x-ocaml>
+<x-ocaml>let%test "Testing product..." = Int.equal 25 (product [ 5; 5; 1; 1 ])</x-ocaml>
+
+
+
+
+<h2>♻️ Challenge: Generalizing Recursion with Higher-Order Functions</h2>
+
+<p>We can refactor functions like <code>add_every_number_up_to</code> and <code>factorial</code> using a common pattern:</p>
+
+<x-ocaml>
+let plus x y = x + y
+let times x y = x * y
+</x-ocaml>
+
+<x-ocaml>
+let rec add_every_number_up_to x =
+  match x with
+  | 0 -> 0
+  | _ -> plus x (add_every_number_up_to (x - 1))
+</x-ocaml>
+
+<x-ocaml>
+let rec factorial x =
+  match x with
+  | 0 -> 1
+  | _ -> times x (factorial (x - 1))
+</x-ocaml>
+
+<p>We abstract the common pattern into one function:</p>
+
+<x-ocaml>
+let rec up_to answer combine x =
+  match x with
+  | 0 -> answer
+  | _ -> combine x (up_to answer combine (x - 1))
+</x-ocaml>
+
+<p>Now we can express the earlier functions more simply:</p>
+
+<x-ocaml>
+let simpler_add_every_number_up_to x = up_to 0 plus x
+let simpler_factorial x = up_to 1 times x
+</x-ocaml>
+
+---
+
+<h3>🧮 Challenge: Abstracting List Recursion</h3>
+
+<p>Now apply the same abstraction idea to recursive list functions:</p>
+
+<x-ocaml>
+let rec sum xs =
+  match xs with
+  | [] -> 0
+  | x :: ys -> plus x (sum ys)
+;;
+</x-ocaml>
+
+<x-ocaml>
+let rec product xs =
+  match xs with
+  | [] -> 1
+  | x :: ys -> times x (product ys)
+;;
+</x-ocaml>
+
+<p>Let’s abstract the pattern used by <code>sum</code> and <code>product</code>:</p>
+
+<x-ocaml>
+let rec every answer combine xs =
+  match xs with
+  | [] -> answer
+  | x :: ys -> combine x (every answer combine ys)
+</x-ocaml>
+
+<p>Now <code>sum</code> and <code>product</code> become one-liners:</p>
+
+<x-ocaml>
+let simpler_sum xs = every 0 plus xs
+let simpler_product xs = every 1 times xs
+</x-ocaml>
+
+<h3>✅ Tests</h3>
+
+<x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 1 (simpler_product [])</x-ocaml>
+<x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 55 (simpler_product [ 55 ])</x-ocaml>
+<x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 25 (simpler_product [ 5; -5; 1; -1 ])</x-ocaml>
+<x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 25 (simpler_product [ 5; 5; 1; 1 ])</x-ocaml>
+
+<x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 0 (simpler_sum [])</x-ocaml>
+<x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 55 (simpler_sum [ 55 ])</x-ocaml>
+<x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 0 (simpler_sum [ 5; -5; 1; -1 ])</x-ocaml>
+<x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 12 (simpler_sum [ 5; 5; 1; 1 ])</x-ocaml>
+
+
+
+<h1>📚 OCaml List Module Practice</h1>
+
+  <h2>List.fold: Generalized Sum and Product</h2>
+  <p><code>List.fold</code> allows you to reduce a list to a single value by combining elements from left to right.</p>
+  <x-ocaml>
+let simpler_sum xs = List.fold ~init:0 ~f:(+) xs
+let simpler_product xs = List.fold ~init:1 ~f:( * ) xs
+  </x-ocaml>
+
+  <h2>List.map: Transform Int List to Float List</h2>
+  <p><code>List.map</code> lets you transform each element in a list. Let’s convert a list of ints to floats:</p>
+  <x-ocaml>
+let float_of_int xs = List.map ~f:Int.to_float xs
+  </x-ocaml>
+
+  <h2>List.init: Rewriting Range</h2>
+  <p><code>List.init</code> constructs lists using an index generator. Let’s rewrite <code>range</code> to use it:</p>
+  <x-ocaml>
+let range from to_ =
+  if from >= to_ then []
+  else List.init (to_ - from) ~f:(fun i -> from + i)
+  </x-ocaml>
+
+  <h2>List.iter: Printing List Elements</h2>
+  <p><code>List.iter</code> runs a function for its side-effects over each list element. We’ll use it to print a list:</p>
+  <x-ocaml>
+let print_int_list xs = List.iter xs ~f:(fun x -> Stdio.printf "%d\n" x)
+  </x-ocaml>
+
+  <h2>✅ Tests</h2>
+  <x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 1 (simpler_product [])</x-ocaml>
+  <x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 55 (simpler_product [ 55 ])</x-ocaml>
+  <x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 25 (simpler_product [ 5; -5; 1; -1 ])</x-ocaml>
+  <x-ocaml>let%test "Testing simpler_product..." = Int.( = ) 25 (simpler_product [ 5; 5; 1; 1 ])</x-ocaml>
+
+  <x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 0 (simpler_sum [])</x-ocaml>
+  <x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 55 (simpler_sum [ 55 ])</x-ocaml>
+  <x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 0 (simpler_sum [ 5; -5; 1; -1 ])</x-ocaml>
+  <x-ocaml>let%test "Testing simpler_sum..." = Int.( = ) 12 (simpler_sum [ 5; 5; 1; 1 ])</x-ocaml>
+
+  <x-ocaml>let%test "Testing float_of_int..." = [%compare.equal: float list] (float_of_int [1; 2; 3]) [ 1.0; 2.0; 3.0 ]</x-ocaml>
+
+  <x-ocaml>let%test "Testing range..." = [%compare.equal: int list] (range 1 4) [ 1; 2; 3 ]</x-ocaml>
+  <x-ocaml>let%test "Testing range..." = [%compare.equal: int list] (range (-5) 3) [ -5; -4; -3; -2; -1; 0; 1; 2 ]</x-ocaml>
+
+
+
+
+
+
+
+<p>The following function has the signature: <code>val divide : int -&gt; int -&gt; int</code></p>
+
+<p>Looking at just the signature, it's not obvious which int argument is the dividend and which is the divisor.</p>
+
+<x-ocaml>
+let divide dividend divisor = dividend / divisor
+</x-ocaml>
+
+<p>We can fix this using labelled arguments.</p>
+
+<p>To label an argument in a signature, "NAME:" is put before the type. When defining the function, we put a tilde (~) before the name of the argument.</p>
+
+<p>The following function has the signature: <code>val divide : dividend:int -&gt; divisor:int -&gt; int</code></p>
+
+<x-ocaml>
+let divide ~dividend ~divisor = dividend / divisor
+</x-ocaml>
+
+<p>We can then call it using:</p>
+
+<x-ocaml>
+divide ~dividend:9 ~divisor:3
+</x-ocaml>
+
+<p>Labelled arguments can be passed in in any order (!)</p>
+
+<p>We can also pass variables into the labelled argument:</p>
+
+<x-ocaml>
+let dividend = 9 in
+let divisor  = 3 in
+divide ~dividend:dividend ~divisor:divisor
+</x-ocaml>
+
+<p>If the variable name happens to be the same as the labelled argument, we don't even have to write it twice:</p>
+
+<x-ocaml>
+let dividend = 9 in
+let divisor  = 3 in
+divide ~dividend ~divisor
+</x-ocaml>
+
+<p>Now implement <code>modulo ~dividend ~divisor</code> using our version of divide with labelled arguments (e.g. <code>modulo ~dividend:7 ~divisor:2</code> should equal 1)</p>
+
+<x-ocaml>
+let modulo ~dividend ~divisor = failwith "For you to implement"
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing modulo..." =
+  Int.(=) 2 (modulo ~dividend:17 ~divisor:5)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing modulo..." =
+  Int.(=) 0 (modulo ~dividend:99 ~divisor:9)
+</x-ocaml>
+
+
+
+
+
+
+
+<p>As in most languages, you can define your own types.  
+The keyword <code>type</code> introduces a type definition.</p>
+
+<p>One of the non-basic types in OCaml is called the variant type.  
+Variant types are similar to Enums in other languages. They are  
+types which may take on multiple forms, where each form is marked  
+by an explicit tag. A variant type is defined as follows:</p>
+
+<x-ocaml>
+type color =
+  | Red
+  | Green
+  | Blue
+</x-ocaml>
+
+<p>Variants are very useful in combination with pattern matching:</p>
+
+<x-ocaml>
+let to_string color =
+  match color with
+  | Red   -> "red"
+  | Green -> "green"
+  | Blue  -> "blue"
+</x-ocaml>
+
+<p>OCaml variants are in many ways more powerful than Enums because the different  
+constructors of your variant can include data in them. Here's an example:</p>
+
+<x-ocaml>
+type card_value =
+  | Ace
+  | King
+  | Queen
+  | Jack
+  | Number of int
+</x-ocaml>
+
+<x-ocaml>
+let one_card_value : card_value = Queen
+let another_card_value : card_value = Number 8
+</x-ocaml>
+
+<x-ocaml>
+let card_value_to_string card_value =
+  match card_value with
+  | Ace      -> "Ace"
+  | King     -> "King"
+  | Queen    -> "Queen"
+  | Jack     -> "Jack"
+  | Number i -> Int.to_string i
+</x-ocaml>
+
+<p>Write a function that computes the score of a card (aces should score 11  
+and face cards should score 10).</p>
+
+<x-ocaml>
+let card_value_to_score card_value =
+  failwith "For you to implement"
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing card_value_to_score..." =
+  Int.(=) 11 (card_value_to_score Ace)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing card_value_to_score..." =
+  Int.(=) 10 (card_value_to_score King)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing card_value_to_score..." =
+  Int.(=) 10 (card_value_to_score Queen)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing card_value_to_score..." =
+  Int.(=) 10 (card_value_to_score Jack)
+</x-ocaml>
+
+<x-ocaml>
+let%test "Testing card_value_to_score..." =
+  Int.(=) 5 (card_value_to_score (Number 5))
+</x-ocaml>
+
+
   
 
   <!-- x-ocaml library scripts -->
